@@ -1,0 +1,111 @@
+# 记录了学习过程中遇到的小问题
+
+1.warning=FALSE  避免警告信息出现  
+echo=FALSE  隐藏代码只显示运行结果
+
+2.cov（x），cor（x）协方差以及相关系数矩阵
+
+3.mytable <- xtabs(~x+y, data=mydata) 
+  chisq.test(mytable)
+列联表检验，x为列，y为行
+通过vcd包中的assocstats（）函数可以计算二维列联表的phi系数和Cramer's系数
+library（vcd）
+assocstats（mytable）
+较大的值意味着有较大的相关性
+
+4.①轮廓图 （对象为矩阵）
+mx <- as.matrix(xa)
+plot(c(1,6), c(min(mx),max(mx)),
+     type = "n", xlab = " ", ylab = " ")
+for (i in 1:6) {
+  lines(mx[i,], col = color[i])
+}  
+c(1,6)为横轴坐标，为xa中变量个数
+c(min(mx),max(mx))为y轴坐标，以mx的最大最小值为上下限
+
+②雷达图
+library(fmsb)
+radarchart(xa[1:6,], centerzero=T, maxmin=F, plwd=1,
+           axistype=2, pcol = color, seg = 5, cglty = 3)
+参数：
+axistype ：轴标签及类型，0:5可选，（默认 0）0：没有轴标签 1：仅标中心 2： 仅标四周 3：既标中心又标四周 4：同1，小数显示 5：同3 小数显示
+seg ：  segment 分成几个圈 
+pty ： point type ，点的形状，默认 16 黑点，32：不显示点
+pcol： 样本颜色 ，默认1:8，循环使用
+plty ：线的形状，默认1:6，循环使用 
+plwd ：线的粗细，默认1
+cglty ： 雷达图网格线类型，默认 ：3（虚线） ； 1 ，实线
+cglwd ： 雷达图网格线粗度
+cglcol ： 雷达图网格线颜色， 默认：navy
+axislabcol ：标签颜色
+title : 标题
+vlcex ：轴 name 的字体大小缩放比例
+calcex ：轴中心字体大小缩放比例
+palcex ：轴四周字体大小缩放比例
+
+③调和曲线图
+library(MSG)
+andrews_curve(xa, n = 100, col = color, type = "l", lwd = 2,
+              xlab = "", ylab = "", main = " 调和曲线")
+
+④散布图矩阵
+attach(xa)
+plot(xa, main = "Scatterplot Matrix")
+
+or pairs（data）
+
+⑤图例
+legend("right", col = color, legend = type, bty = "n", lty = 1)
+其中color and type为设置的变量
+
+5.AR（p）模型的估计
+data.y = data[1]将data表中的第一列数据提取出来
+plot(ts(data.y))  注意前面提取的data.y并不是一个时间序列（也就是只有obs,没有time_series），而是一个数据集列对象，为了做时间序列分析，还需利用ts命令将其转换成一个时间序列（自动补齐时间坐标轴上的序列，默认从0到obs的个数减1，间隔1），plot是画图命令
+pacf(data.y)偏自相关检验确定ar模型阶数  (acf(data.y)自相关检验) 
+win.graph() 重新打开一个画图窗口并处于激活状态
+ar(data.y,FALSE,3)  建立ar回归模型，3为阶数
+
+对ar（1）模型参数θ的估计函数
+est <- function(theta, n){
+  wn <- rnorm(n, mean=0, sd=1)
+  y <- c()
+  y[1] <- 0
+  for (i in 2:n){
+    y[i] <- theta*y[i-1] + wn[i]}
+  ts <- ts(y)
+  ar(ts, method="ols", order.max = 1)
+}
+
+6.Excel缺失值填充：选中列之后按下F5，定位选择空值，填充0之后按下Ctrl enter即可
+7.mvn 多元正态检验方法， mvn（data，method）
+8.相关性检验：library(Hmisc)
+ave.cor <- cor(avenormal1)
+res <- rcorr(as.matrix(avenormal1))
+signif(res$P,2)
+能输出矩阵相关系数以及对应的显著性水平
+
+9.R输出图时中文不显示解决方法： fig.showtext=TRUE
+10.R文档开头：```{r echo=FALSE}
+knitr::opts_chunk$set(warning = F, message = F)
+```
+可以不输出警告信息。
+
+11.geometry: "left=2.5cm,right=2cm,top=3cm,bottom=2.5cm"
+调整中文pdf页边距
+
+12.options(download.file.method="libcurl")
+无法安装包时先运行这一代码
+
+13.主成分分析函数
+prcomp 默认使用相关系数矩阵
+princomp 默认使用协方差矩阵，加上cor=T时与prcomp相同
+principal 因子分析中的主成分法，可以进行因子旋转（基于PCA）
+fa 因子分析中的极大似然函数法（基于MLE）
+
+14.#对变量进行聚类
+x4 <- as.matrix(x1)
+library(ClustOfVar)
+tree <- hclustvar(x4)
+plot(tree)
+
+15. 在R中打开sav文件：加载haven包，之后和csv文件类似
