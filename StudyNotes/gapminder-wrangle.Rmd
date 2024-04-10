@@ -11,3 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Tide data
 ## Data wrangling:dplyr
+### tidy data
+  * put variables in the columns and observations in the rows
+  * import-tidy-transform/visualization/model-communicate
