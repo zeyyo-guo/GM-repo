@@ -14,3 +14,50 @@ knitr::opts_chunk$set(echo = TRUE)
 ### tidy data
   * put variables in the columns and observations in the rows
   * import-tidy-transform/visualization/model-communicate
+  * str() displays the structure of an object
+  
+### gapminder data
+```{r}
+  library(readr)
+  gapminder <- read_csv("data/gapminder.csv")
+  # head() show first 6
+  # tail() show last 6
+```
+
+### dplyr basics
+  * filter(): pick observations by their values
+    * filter() subsets data row-wise (observations)
+  * select(): pick variables by their names
+    * select() subsets data column-wise (variables)
+  * mutate(): create new variables with functions of existing variables
+    * mutate() adds new variables
+  * summarize(): collapse many values down to a single summary
+  * arrange(): reorder the rows
+    * Use desc(var) to arrange in decreasing order
+  * group_by(): change the scope of each function from operating on the entire dataset to operating on it group-by-group
+  * pipe operate %>% 
+    * takes the thing on the left-hand-side and pipes it into the function call on the right-hand-side.
+    * The pipe should be at the end of the previous line, not the start of the
+current line.
+  
+### joining datasets
+  * left_join:keep everything from the left table and matches the right table.
+  * right_join:keep everything from the right table and matches the left table
+  * inner_join:keep the observations that are similar between the two tables
+  * full_join: keep all observations from both tables
+
+## Data wrangling:tidyr
+### wide data
+  * each row is often a site/subject/patient and multiple observation variables containing the same type of data
+  
+### tidyr basics
+  * turn columns into rows (gather()),
+  * turn rows into columns (spread()),
+  * turn a character column into multiple columns (separate()),
+  * turn multiple character columns into a single column (unite())
+  * separate():the main arguments are separate(data, col, into, sep...)
+  
+### tips
+  * when the histogram shows very large tails, do better by the log transforming the data  
+    * scale_x_log10()
+  * package ggrepel() can show the label of scatterplot
