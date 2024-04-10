@@ -1,0 +1,102 @@
+---
+title: "R function"
+author: "Gwo"
+date: "2024-04-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# function
+## condition
+  * if()
+    * one-line actions don't need braces
+  * nested if()
+  * Combining Booleans: && and ||
+    * Use && and || for control, & and | for subsetting
+  * switch()
+  
+## iteration 
+  * for()
+    * the body of the for() loop : if() clauses; other for() loop.
+  * while(): conditional iteration
+
+## Vectorized conditions: ifelse()
+  * 1st argument is a Boolean vector, then pick from the 2nd or 3rd vector arguments as TRUE or FALSE
+
+## Unconditional iteration
+### "Manual" control over iteration
+  * break() exits the loop
+  * next() skips the rest of the body and goes back into the loop 
+  
+# why function
+  Data structures tie related values into one object;
+  Functions tie related commands into one object.
+
+## conponent
+  * interfaces:inputs or arguments
+  * output or return value
+  * comments: description of purpose; listing of arguments; listing of outputs 
+  
+## what should a function
+  * Named and default arguments
+    * Default values get used if names are missing
+    * Named arguments can go in any order when explicitly tagged
+  * Checking Arguments
+    * stopifnot() are a series of expressions which should all be TRUE
+
+## Summary
+  * Functions bundle related commands together into objects: easier to rerun, easier to re-use, easier to combine, easier to modify, less risk of error,easier to think about
+  * Interfaces control what the function can see (arguments, environment) and change (its internals, its return value)
+  * Calling functions we define works just like calling built-in functions:named arguments, defaults
+  
+# extend function
+## Multiple functions: Doing different things to the same object
+  * Make the model one object; assume it has certain components
+  * Consistent Interfaces: arguments and structure
+  * Put all the related functions in a single file; Source them together
+
+## Sub-functions: Breaking up big jobs into small ones
+  * "Rule of thumb: A function longer than a page is probably too long"
+  * "Rule of thumb: If you find yourself writing the same code in multiple places,make it a separate function"
+  * Cons: Gets re-declared each time, can't access in global environment
+
+## summary
+  * Multiple functions let us do multiple related jobs, either on the same object
+or on similar ones
+  * Sub-functions let us break big problems into smaller ones, and re-use the
+solutions to the smaller ones
+  * Recursion is a powerful way of making hard problems simpler
+  
+# Top-downdesignofprograms
+  1.Start with the big-picture view of the problem
+    * Resources
+    * Requirements
+  2.Break the problem into a few big parts
+    * Try to break the calculation into a few (say ≤ 5) parts
+  3.Figure out how to fit the parts together
+    * Write top-level code for the function which puts those steps together
+  4.Go do this for each part    
+  
+## pros
+  * Top-down design fits naturally with functional coding
+  * Top-down design makes debugging easier
+  * Top-down design makes testing easier
+  
+## workflow
+  * Thinking Algorithmically
+  * Combining the Practices
+  * Re-factoring
+  * Grouping into Objects
+  * Extracting the Common Sub-Task
+  * ExtractingGeneral Operations
+
+## summary
+  * Top-down design is a recursive heuristic for coding
+  * Leads to multiple short functions, each solving a limited problem
+  * Disciplines you to think algorithmically
+  * Once you have working code, re-factor it to make it look more like it came
+from a top-down design
+
