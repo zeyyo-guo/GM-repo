@@ -9,4 +9,40 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## 
+# TestCase:Birth weightdata
+```{r}
+library(tidyverse)
+library(MASS)
+data(birthwt)
+summary(birthwt)
+
+# make ir readable
+colnames(birthwt) <- c("birthwt.below.2500","mother.age","mother.weight","race","mother.smokes","previous.prem.labor","hypertension","uterine.irr","physician.visits","birthwt.grams")
+
+# make all the factors more description
+birthwt$race <- factor(c("white","black","other")[birthwt$race])
+birthwt$mother.smokes <- factor(c("No", "Yes")[birthwt$mother.smokes + 1])
+birthwt$uterine.irr <- factor(c("No", "Yes")[birthwt$uterine.irr + 1])
+birthwt$hypertension <- factor(c("No", "Yes")[birthwt$hypertension + 1])
+```
+
+## plot to observe
+### bar plot
+### scatterplot
+### boxplot
+
+## Basic statistical methods
+### linear model
+  * t-test, p-value
+  * lm(x~y,data)
+
+### GeneralizedLinear Models
+  * The default value is a Gaussian model (a standard linear model)
+  * glm -- family = distribution(link=function)
+
+## random number generators
+  * runif() and set.seed()
+
+## notes
+  * the 0-1 variable needs +1 to correspond
+  * <<-: Used to change variables in the global environment within a function,"super assignment"
