@@ -42,7 +42,50 @@ birthwt$hypertension <- factor(c("No", "Yes")[birthwt$hypertension + 1])
 
 ## random number generators
   * runif() and set.seed()
+  * some distributions
+    * Uniform(0,1)
+    * Bernoulli(p)
+    * Binomial(n,p)
+    * Gaussian(0,1)
+    * Exponential(1)
+    * Gamma(a)
+  * some function
+    * rexp() generates variates from the distribution
+    * dexp() gives the probability density function
+    * pexp() gives the cumulative distribution function
+    * qexp() gives the quantiles
+    * ecdf() - e mpirical c umulative d istribution f unction
+    * density(x) estimates the density of x by counting how many observations fall in a little window around each point, and then smoothing
+    * table() - tabulate outcomes, most useful for discrete spaces
+    
+## fit distribution models to data
+  * Match moments (mean, variance, etc.)
+    * Pick enough moments that they identify the parameters
+  * Match other summary statistics
+    * median or quantiles
+  * Maximize the likelihood
+    *  maximum likelihood estimate = MLE
+    
+## Quantile-Quantile (QQ)Plots
+  * Plot theoretical vs. actual quantiles or quantiles of two samples
+  * Ideally, a straight line when the distributions are the same
 
+## CalibrationPlots
+  * Ideal calibration plot is a straight line up the diagonal
+  * Systematic deviations are a warning sign
+  * Kolmogorov-Smirnov Test
+    * Biggest gap between theoretical and empirical CDF:
+    $$ D_{KS} = \max_x |F(x)-\hat F(x)| $$
+  * Chi-SquaredTest
+  
 ## notes
   * the 0-1 variable needs +1 to correspond
   * <<-: Used to change variables in the global environment within a function,"super assignment"
+  * ?Distributions to see which distributions are built in
+  * use the package fitdistr() 
+  
+## Summary
+  * Visualizing and computing empirical distribution
+  * Parametric distributions are models
+  * Methods of fitting: moments, generalized moments, likelihood
+  * Methods of checking: visual comparisons, other statistics, tests, calibration
