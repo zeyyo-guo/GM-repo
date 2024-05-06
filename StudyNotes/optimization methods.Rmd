@@ -1,0 +1,195 @@
+---
+title: "Numerical optimization"
+author: "Gwo"
+date: "2024-05-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Basics of optimization
+## OptimizationProblems
+
+Given an **objective function** $f: \mathcal{D} \mapsto R$, find
+
+$$\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+  \theta^* = \argmin_{\theta}{f(\theta)}$$
+
+Basics: maximizing $f$ is minimizing $-f$:
+
+$$\argmax_{\theta}{f(\theta)}= \argmin_{\theta}{-f(\theta)}$$
+
+If $h$ is strictly increasing (e.g., $\log$), then
+
+$$\argmin_{\theta}{f(\theta)} = \argmin_{\theta}{h(f(\theta))}$$
+## Gradient and changes to f
+$$f(x)  \approx f(x_0) +(x-x_0)f^{\prime}(x_0)$$
+
+Locally, the function looks linear; to minimize a linear function, move down the slope
+
+Multivariate version:
+
+$$f(\theta) \approx f(\theta_0) + (\theta-\theta_0) \cdot \nabla f(\theta_0)$$
+
+$\nabla f(\theta_0)$ points in the direction of fastest ascent at $\theta_0$
+
+
+# Gradient descent
+1. Start with initial guess for $\theta$, step-size $\eta$
+2. While ((not too tired) and (making adequate progress))
+    - Find gradient $\nabla f(\theta)$
+    - Set $\theta \leftarrow \theta - \eta \nabla f(\theta)$
+3. Return final $\theta$ as approximate $\theta^*$
+
+Variations: adaptively adjust $\eta$ to make sure of improvement or search along the gradient direction for minimum
+
+# Newton's method
+Taylor-expand for the value *at the minimum* $\theta^*$
+
+$$f(\theta^*) \approx f(\theta) + (\theta^*-\theta) \nabla f(\theta) +
+  \frac{1}{2}(\theta^*-\theta)^T \mathbf{H}(\theta) (\theta^*-\theta)$$
+
+Take gradient, set to zero, solve for $\theta^*$:
+
+$$\begin{eqnarray*}
+    0 & = & \nabla f(\theta) + \mathbf{H}(\theta) (\theta^*-\theta) \\
+    \theta^* & = & \theta - {\left(\mathbf{H}(\theta)\right)}^{-1} \nabla f(\theta)
+  \end{eqnarray*}$$
+
+Works *exactly* if $f$ is quadratic  
+  <small>and $\mathbf{H}^{-1}$ exists, etc.</small>
+  
+## steps
+1. Start with guess for $\theta$
+2. While ((not too tired) and (making adequate progress))
+    - Find gradient $\nabla f(\theta)$ and Hessian $\mathbf{H}(\theta)$
+    - Set $\theta \leftarrow \theta - \mathbf{H}(\theta)^{-1} \nabla f(\theta)$
+
+3. Return final $\theta$ as approximation to $\theta^*$
+
+  * Typically many fewer iterations than gradient descent 
+  * much harder to get zig-zagging, over-shooting 
+  
+# Curve-fitting
+data $(x_1, y_1), (x_2, y_2), \ldots (x_n, y_n)$,possible curves, $r(x;\theta)$
+
+Least-squares curve fitting:
+
+$$\hat{\theta} = \argmin_{\theta}{\frac{1}{n}\sum_{i=1}^n{\{y_i - r(x_i;\theta)\}^2}}$$
+
+"Robust" curve fitting: 
+
+$$\hat{\theta} = \argmin_{\theta}{\frac{1}{n}\sum_{i=1}^{n}{\psi\{y_i - r(x_i;\theta)\}}}$$
+
+# R: optim, nls
+## Optimization in R:optim()
+
+```
+optim(par, fn, gr, method, control, hessian)
+```
+
+- `fn`: function to be minimized; mandatory
+- `par`: initial parameter guess; mandatory
+- `gr`: gradient function; only needed for some methods
+- `method`: defaults to a gradient-free method ("Nedler-Mead"), could be BFGS (Newton-ish)
+- `control`: optional list of control settings
+    + <small>(maximum iterations, scaling, tolerance for convergence, etc.)</small>
+- `hessian`: should the final Hessian be returned? default FALSE
+
+## nls
+`optim` is a general-purpose optimizer
+`nls` is for nonlinear least squares
+
+```
+nls(formula, data, start, control, [[many other options]])
+```
+
+- `formula`: Mathematical expression with response variable, predictor variable(s), and unknown parameter(s)
+- `data`: Data frame with variable names matching `formula`
+- `start`: Guess at parameters (optional)
+- `control`: Like with `optim` (optional)
+
+  * The default optimization is a version of Newton's method
+  
+## summary
+Trade-offs: complexity of iteration vs. number of iterations vs. precision of approximation
+    + Gradient descent: less complex iterations, more guarantees, less adaptive
+    + Newton: more complex iterations, but few of them for good functions, more adaptive, less robust
+    
+# Other methods
+## Nedler-Mead a.k.a simplex method
+  * the moves: reflection; expansion; contraction; reduction.
+  
+## Coordinate descent
+  - Start with initial guess $\theta$
+- While ((not too tired) and (making adequate progress))
+    + For $i \in (1:p)$
+        * do 1D optimization over $i^{\mathrm{th}}$ coordinate of $\theta$,
+      holding the others fixed
+        * Update $i^{\mathrm{th}}$ coordinate to this optimal value
+- Return final value of $\theta$
+
+## Constrained & Penalized Optimization
+- Optimization under constraints
+- Lagrange multipliers
+- Penalized optimization
+- Statistical uses of penalied optimization
+
+### Barrier method
+Fix $\mu >0$ and try minimizing $$f(\theta) - \mu\log{\left(d-h(\theta)\right)}$$
+"pushes away" from the barrier --- more and more weakly as $\mu \rightarrow 0$
+
+1. Initial $\theta$ in feasible set, initial $\mu$
+2. While ((not too tired) and (making adequate progress))  
+    a. Minimize $f(\theta) - \mu\log{\left(d-h(\theta)\right)}$  
+    b. Reduce $\mu$
+3. Return final $\theta$
+
+  * constrOptim implements the barrier method
+
+### Ridge regression/Tikhonov regularization
+$$\tilde{\beta} = \argmin_{\beta}{MSE(\beta) + \mu \sum_{j=1}^{p}{\beta_j^2}} = \argmin_{\beta}{MSE(\beta) + \mu \|\beta\|_2^2}$$
+
+Penalizing $\beta$ this way makes the estimate more _stable_; especially useful for
+- Lots of noise
+- Collinear data ($\mathbf{x}$ not of "full rank")
+- High-dimensional, $p > n$ data (which implies collinearity)
+
+### The Lasso
+$$\beta^{\dagger} = \argmin_{\beta}{MSE(\beta) + \lambda \sum_{j=1}^{p}{|\beta_j|}} = \argmin_{\beta}{MSE(\beta) + \lambda\|\beta\|_1}$$
+
+  * Also stabilizes (like ridge)
+  * Also handles high-dimensional data (like ridge)
+  * Enforces sparsity: it likes to drive small coefficients exactly to 0
+  
+### Spline smoothing
+"Spline smoothing": minimize MSE of a smooth, nonlinear function, plus a penalty on curvature:
+
+$$\hat{f} = \argmin_{f}{\frac{1}{n}\sum_{i=1}^{n}{(y_i-f(x_i))^2} + \int{(f^{\prime\prime}(x))^2 dx}}$$
+
+### Cross-validation
+* Divide the data into parts
+* For each value of $\lambda$, estimate the model on one part of the data
+* See how well the models fit the other part of the data
+* Use the $\lambda$ which extrapolates best on average
+
+### AugmentedLagrangian Methods
+
+### Stochastic Gradient Descent
+1. Start with initial guess $\theta$, learning rate $\eta$
+2. While ((not too tired) and (making adequate progress))  
+    + At $t^{\mathrm{th}}$ iteration, pick random $I$ uniformly  
+    + Set $\theta\leftarrow \theta - t^{-1}\eta\nabla f_I(\theta)$
+3. Return final $\theta$
+
+* Shrinking step-size by 1/t ensures noise in each gradient dies down
+
+### Stochastic Newton's Method
+1.  Start with initial guess $\theta$
+2.  While ((not too tired) and (making adequate progress))  
+    + At $t^{\mathrm{th}}$ iteration, pick uniformly-random $I$  
+    + $\theta \leftarrow \theta - t^{-1}\mathbf{H}_{I}^{-1}(\theta) \nabla f_{I}(\theta)$
+3. Return final $\theta$
