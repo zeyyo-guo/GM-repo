@@ -1,0 +1,42 @@
+---
+title: "Simulation methods"
+author: "Gwo"
+date: "2024-05-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Simulation
+## sample()
+### Permutations 
+  * it works on any object that has a defined length().
+  * for example, sample(1:6); sample(list("A",3,sum))
+
+### Resampling
+  * Resampling from any existing distribution gets us the bootstrap family of
+estimators
+  * the jackknife worked by removing one point from the sample and recalculating the statistic of interest. Here resample the same length with replacement
+
+```{r}
+bootstrap.resample <- function (object){
+sample (object, length(object), replace=TRUE)}
+replicate(5, bootstrap.resample (6:10))
+```
+
+### bootstrap test 
+  * The 2-sample t-test checks for differences in means according to a known null
+distribution
+
+### Markov Chain
+  * Markov dependence:
+  $p(X_1, X_2, ..., X_n) = p(X_1)p(X_2|X_1)...p(X_n|X_{n-1},...,X_1) = p(X_1)\prod_{i=2}^np(X_i|X_{i-1})$
+  * generating a Markov Chain
+    - Set up conditional distribution
+    - Draw the initial state of the chain
+    - For every additional draw, use the previous draw to inform the new one
+  * simple unbounded Markov Chain
+    - "Unbiased Random Walk": Independent events atop a dependent structure.
+  
