@@ -1,0 +1,67 @@
+---
+title: "Simulation methods"
+author: "Gwo"
+date: "2024-05-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Simulation
+## sample()
+### Permutations 
+  * it works on any object that has a defined length().
+  * for example, sample(1:6); sample(list("A",3,sum))
+
+### Resampling
+  * Resampling from any existing distribution gets us the bootstrap family of
+estimators
+  * the jackknife worked by removing one point from the sample and recalculating the statistic of interest. Here resample the same length with replacement
+
+```{r}
+bootstrap.resample <- function (object){
+sample (object, length(object), replace=TRUE)}
+replicate(5, bootstrap.resample (6:10))
+```
+
+### Bootstrap test 
+  * The 2-sample t-test checks for differences in means according to a known null
+distribution
+
+### Markov Chain
+  * Markov dependence:
+  $p(X_1, X_2, ..., X_n) = p(X_1)p(X_2|X_1)...p(X_n|X_{n-1},...,X_1) = p(X_1)\prod_{i=2}^np(X_i|X_{i-1})$
+  * generating a Markov Chain
+    - Set up conditional distribution
+    - Draw the initial state of the chain
+    - For every additional draw, use the previous draw to inform the new one
+  * simple unbounded Markov Chain
+    - "Unbiased Random Walk": Independent events atop a dependent structure.
+    
+#### Integration by Simulation
+
+Law of large numbers: if $X_1, X_2, \ldots X_n$ all IID with p.d.f. $p$,
+
+$$\frac{1}{n}\sum_{i=1}^{n}{f(X_i)} \rightarrow \mathbb{E}_{p}[f(X)] =
+  \int{f(x) p(x) dx}$$
+
+The **Monte Carlo principle**: to find $\int{g(x) dx}$, draw from $p$ and take the sample mean of $f(x) = g(x)/p(x)$.
+
+Central limit theorem:
+
+$$\frac{1}{n}\sum_{i=1}^{n}{\frac{g(x_i)}{p(x_i)}} \rightsquigarrow
+  \mathcal{N}\left(\int{g(x)dx}, \frac{\sigma^2_{g/p}}{n}\right)$$
+
+The Monte Carlo approximation to the integral is unbiased, with root mean square error $\propto n^{-1/2}$
+
+#### Taking unknown samples
+  **Rejection sampling**
+  **Metropolis Algorithm**
+  * Rejection sampling works if we know the complete distribution $p(x)$, with $\int p(x) = 1$.
+
+### Simulation as models
+  * specify the statistical model is as a simulation
+  * Fit by matching simulation output to data
+  * When we don't have exact probability formulas or they don't apply, we can simulate to get arbitrarily-good approximations
