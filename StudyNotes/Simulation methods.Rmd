@@ -26,7 +26,11 @@ sample (object, length(object), replace=TRUE)}
 replicate(5, bootstrap.resample (6:10))
 ```
 
+<<<<<<< HEAD
 ### Bootstrap test 
+=======
+### bootstrap test 
+>>>>>>> da30161c0837d93e59d487f9e194a637fcc5144d
   * The 2-sample t-test checks for differences in means according to a known null
 distribution
 
@@ -39,6 +43,7 @@ distribution
     - For every additional draw, use the previous draw to inform the new one
   * simple unbounded Markov Chain
     - "Unbiased Random Walk": Independent events atop a dependent structure.
+<<<<<<< HEAD
     
 #### Integration by Simulation
 
@@ -65,3 +70,6 @@ The Monte Carlo approximation to the integral is unbiased, with root mean square
   * specify the statistical model is as a simulation
   * Fit by matching simulation output to data
   * When we don't have exact probability formulas or they don't apply, we can simulate to get arbitrarily-good approximations
+=======
+  
+>>>>>>> da30161c0837d93e59d487f9e194a637fcc5144d
